@@ -92,10 +92,8 @@ module Mocoso
   #
   def stub object, method, result, &block
     metaclass = object.singleton_class
-    stubbed_method = "__mocoso_#{method}"
+    stubbed_method = object.send :method, method
     invoked = false
-
-    metaclass.send :alias_method, stubbed_method, method
 
     metaclass.send :define_method, method do |*args|
       invoked = true
@@ -103,11 +101,9 @@ module Mocoso
     end
 
     begin
-      yield
+      yield stubbed_method
     ensure
-      metaclass.send :undef_method, method
-      metaclass.send :alias_method, method, stubbed_method
-      metaclass.send :undef_method, stubbed_method
+      metaclass.send :define_method, method, stubbed_method
       raise "Expected method #{method} not invoked" if !invoked
     end
   end
