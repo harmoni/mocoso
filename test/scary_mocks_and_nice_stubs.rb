@@ -87,3 +87,19 @@ test 'raises error if stubbed method is never invoked' do |subject|
     end
   }
 end
+
+test 'can have a stub within a stub' do |subject|
+  stub subject, :foo, 'outer' do
+    stub subject, :foo, 'inner' do
+      assert_equal 'inner', subject.foo
+    end
+    assert_equal 'outer', subject.foo
+  end
+end
+
+test 'yields a hook to call the original method' do |subject|
+  stub subject, :foo, 'outer' do |original|
+    assert_equal 'outer', subject.foo
+    assert_equal 'foo', original.call
+  end
+end
