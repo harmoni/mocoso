@@ -107,9 +107,11 @@ module Mocoso
   #   end
   #
   def expect(object, method, options)
+    strict = options.delete :strict
+
     expectation = ->(*params) {
       with = options.fetch(:with, [])
-      raise ExpectationError, "Expected #{with}, got #{params}" if params != with
+      raise ExpectationError, "Expected #{with}, got #{params}" if strict && params != with
       options.fetch(:return)
     }
 
