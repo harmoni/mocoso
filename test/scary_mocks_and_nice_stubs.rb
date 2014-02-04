@@ -63,8 +63,8 @@ test "succeeds if expectations are met" do |subject|
   assert_equal "baz", subject.baz("baz")
 end
 
-test "raises an error if expectation are not met" do |subject|
-  expect(subject, :baz, with: ["value"], return: "result") do
+test "raises an error if expectation are not met and strict is set" do |subject|
+  expect(subject, :baz, with: ["value"], return: "result", strict: true) do
     assert_raise(Mocoso::ExpectationError) { subject.baz("another") }
   end
 end
